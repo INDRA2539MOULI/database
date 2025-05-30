@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supabase Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <h2>User Form</h2>
+
+  <form id="myForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <!-- Status message -->
+  <p id="statusMsg" style="font-weight: bold;"></p>
+
+  <!-- Place your script AFTER all HTML -->
+  <script>
+    // Initialize Supabase AFTER the script tag is loaded
+    const supabaseUrl = 'https://izpzlawgdbjlyouprouf.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml6cHpsYXdnZGJqbHlvdXByb3VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg2MDE1MDksImV4cCI6MjA2NDE3NzUwOX0.F9zq5Jr4d3Po5lRwFAh_2Xn9-Y2ekPgie9OPWE1TK-E';
+
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    document.getElementById('myForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const statusMsg = document.getElementById('statusMsg');
+
+      statusMsg.textContent = 'Submitting...';
+      statusMsg.style.color = 'blue';
+
+      const { data, error } = await supabase
+        .from('users') // Use your actual table name
+        .insert([{ name: name, email: email }]);
+
+      if (error) {
+        statusMsg.textContent = "❌ Error: " + error.message;
+        statusMsg.style.color = 'red';
+      } else {
+        statusMsg.textContent = "✅ Data saved successfully!";
+        statusMsg.style.color = 'green';
+        document.getElementById('myForm').reset(); // Clear the form
+      }
+    });
+  </script>
+</body>
+</html>
